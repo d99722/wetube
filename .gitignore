@@ -119,3 +119,6 @@ dist
 
 package-lock.json
 wetube.code-workspace
+uploads
+static
+.vscode
