@@ -101,32 +101,6 @@ export const postFacebookLogin = (req, res) => {
 
 export const facebookLogin = passport.authenticate("facebook");
 
-export const logout = (req, res) => {
-  // to do : logout 처리
-  req.logout();
-  res.redirect(routes.home);
-};
-
-export const getMe = (req, res) => {
-  res.render("userDetail", { pageTitle: "User Detail", user: req.user });
-};
-
-export const userDetail = async (req, res) => {
-  const {
-    params: { id },
-  } = req;
-  try {
-    const user = await User.findById(id);
-    res.render("userDetail", { pageTitle: "User Detail", user });
-  } catch (error) {
-    res.redirect(routes.home);
-  }
-};
-export const editProfile = (req, res) =>
-  res.render("editProfile", { pageTitle: "Edit Profile" });
-export const changePassword = (req, res) =>
-  res.render("changePassword", { pageTitle: "Change Password" });
-
 export const kakaoLoginCallback = async (_, __, profile, cb) => {
   const {
     _json: {
@@ -143,7 +117,7 @@ export const kakaoLoginCallback = async (_, __, profile, cb) => {
     const user = await User.findOne({ email });
     if (user) {
       user.kakaoId = id;
-      user.avatarUrl = avatarUrl;
+      // user.avatarUrl = avatarUrl;
       user.save();
       return cb(null, user);
     }
@@ -164,3 +138,64 @@ export const postKakaoLogin = (req, res) => {
 };
 
 export const kakaoLogin = passport.authenticate("kakao");
+
+export const logout = (req, res) => {
+  // to do : logout 처리
+  req.logout();
+  res.redirect(routes.home);
+};
+
+export const getMe = (req, res) => {
+  res.render("userDetail", { pageTitle: "User Detail", user: req.user });
+};
+
+export const userDetail = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  try {
+    const user = await User.findById(id).populate("videos");
+    res.render("userDetail", { pageTitle: "User Detail", user });
+  } catch (error) {
+    res.redirect(routes.home);
+  }
+};
+export const getEditProfile = (req, res) =>
+  res.render("editProfile", { pageTitle: "Edit Profile" });
+
+export const postEditProfile = async (req, res) => {
+  const {
+    body: { _id: id, name, email },
+    file,
+  } = req;
+  try {
+    await User.findByIdAndUpdate(req.user.id, {
+      name,
+      email,
+      avatarUrl: file ? file.path : req.user.avatarUrl,
+    });
+    res.redirect(routes.me);
+  } catch (error) {
+    res.redirect(routes.editProfile);
+  }
+};
+
+export const getChangePassword = (req, res) =>
+  res.render("changePassword", { pageTitle: "Change Password" });
+
+export const postChangePassword = async (req, res) => {
+  const {
+    body: { oldPassword, newPassword, newPassword1 },
+  } = req;
+  try {
+    if (newPassword !== newPassword1) {
+      res.status(400);
+      res.redirect(`/users${routes.changePassword}`);
+      return;
+    }
+    await req.user.changePassword(oldPassword, newPassword);
+    res.redirect(routes.me);
+  } catch (error) {
+    res.redirect(`/users${routes.changePassword}`);
+  }
+};

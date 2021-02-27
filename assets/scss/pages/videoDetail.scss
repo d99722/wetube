@@ -9,11 +9,16 @@
   }
   .video__info {
     width: 100%;
-    max-width: 850px;
+    // max-width: 850px;
     margin-top: 25px;
     button {
       width: 100px;
       margin-bottom: 25px;
+    }
+    .video__author {
+      a {
+        color: #3498db;
+      }
     }
     .video__title,
     .video__views,
