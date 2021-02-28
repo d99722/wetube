@@ -1,5 +1,6 @@
 import routes from "../routes";
 import Video from "../models/Video";
+import Comment from "../models/Comment";
 
 // javascript : 한번에 많은 일을 할 수 있다 -> default로 기다리지 않는다. (다른 작업 동시 실행)
 // async, await를 통해 기다리게 해야한다. (await 부분이 끝나기 전까지 다음을 시행 X) (cf : error 후 실행 : try catch need)
@@ -58,7 +59,9 @@ export const videoDetail = async (req, res) => {
     params: { id },
   } = req;
   try {
-    const video = await Video.findById(id).populate("creator");
+    const video = await Video.findById(id)
+      .populate("creator")
+      .populate("comments");
     res.render("videoDetail", { pageTitle: video.title, video });
     // video == video:video (진화된 js 작성법)
   } catch (error) {
@@ -112,4 +115,45 @@ export const deleteVideo = async (req, res) => {
     console.log(error);
   }
   res.redirect(routes.home);
+};
+
+// Register Video View
+// api는 db와의 통신을 위함 -> 화면을 변화 시키지 않고 db의 정보를 수정 ... 다른 서비스와 통신
+export const postRegisterView = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    video.views += 1;
+    video.save();
+    res.status(200);
+    //200 : ok, 400 : error
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+// Add Comment
+export const postAddCommnet = async (req, res) => {
+  const {
+    params: { id },
+    body: { comment },
+    user,
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    const newComment = await Comment.create({
+      text: comment,
+      creator: user._id,
+    });
+    video.comments.push(newComment.id);
+    video.save();
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
 };

@@ -7,6 +7,15 @@ const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const volumeRange = document.getElementById("jsVolume");
 
+// fetch("url") -> axios를 통해 이쁘게 사용 가능...
+const registerView = () => {
+  // split을 통해 주소에서 id를 얻기
+  const videoId = window.location.href.split("/videos/")[1];
+  fetch(`/api/${videoId}/view`, {
+    method: "POST",
+  });
+};
+
 function handlePlayClick() {
   if (videoPlayer.paused) {
     videoPlayer.play();
@@ -107,6 +116,8 @@ function setTotalTime() {
 }
 
 function handleEnded() {
+  // fetch를 실행해줌
+  registerView();
   videoPlayer.currentTime = 0;
   playBtn.innerHTML = '<i class="fas fa-play"></i>';
 }

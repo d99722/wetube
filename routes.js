@@ -31,6 +31,11 @@ const FB_CALLBACK = "/auth/facebook/callback";
 const KK = "/auth/kakao";
 const KK_CALLBACK = "/auth/kakao/callback";
 
+// API
+const API = "/api";
+const REGISTER_VIEW = "/:id/view";
+const ADD_COMMENT = "/:id/comment";
+
 const routes = {
   home: HOME,
   join: JOIN,
@@ -77,6 +82,9 @@ const routes = {
   facebookCallback: FB_CALLBACK,
   kakao: KK,
   kakaoCallback: KK_CALLBACK,
+  api: API,
+  registerView: REGISTER_VIEW,
+  addComment: ADD_COMMENT,
 };
 
 export default routes;
