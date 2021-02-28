@@ -13,7 +13,7 @@ const CommentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Video",
   },
-  createor: {
+  creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
