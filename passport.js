@@ -1,9 +1,9 @@
 import passport from "passport";
 import GithubStrategy from "passport-github";
-import FacebookStrategy from "passport-facebook";
+// import FacebookStrategy from "passport-facebook";
 import KakaoStrategy from "passport-kakao";
 import {
-  facebookLoginCallback,
+  // facebookLoginCallback,
   githubLoginCallback,
   kakaoLoginCallback,
 } from "./controllers/userController";
@@ -24,6 +24,7 @@ passport.use(
 );
 
 // facebook - 보안 사유로 skip
+/*
 passport.use(
   new FacebookStrategy(
     {
@@ -36,6 +37,7 @@ passport.use(
     facebookLoginCallback
   )
 );
+*/
 
 passport.use(
   new KakaoStrategy(
